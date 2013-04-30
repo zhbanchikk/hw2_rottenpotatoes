@@ -7,7 +7,7 @@ class MoviesController < ApplicationController
   end
 
   def index
-    #session.clear 
+    #session.clear
     @all_ratings = Movie.all_ratings
     #@movies = Movie.all
     @checked_ratings = {}
@@ -15,8 +15,7 @@ class MoviesController < ApplicationController
     if ( params[:ratings] == nil ) && ( session[:ratings] == nil )
       session[:ratings] = Movie.all_ratings
       @checked_ratings = session[:ratings]
-    # don't need it
-    # else
+    #else
     #  @checked_ratings = params[:ratings]
     end
 
@@ -25,31 +24,28 @@ class MoviesController < ApplicationController
       #@checked_sort = session[:sort]
     end
     
-    
-    if params[:ratings] != nil
-      session[:ratings] = params[:ratings].keys
-    end
-    
-    if flash[:redirect] == nil
-      flash[:redirect] = true
-      flash.keep
-      ratings_hash = {}
-      session[:ratings].each do |rate|
-        str = "ratings"
-        ratings_hash[rate] = 1
-      end
-      redirect_to :ratings => ratings_hash, :sort => session[:sort]
-    end
-
     if session[:sort] != nil
       variable_name = "checked_sort_" + session[:sort]
       instance_variable_set("@#{variable_name}", "hilite")
     end
-     
+    
+    # title
+    #if session[:sort] == "title"
+    #  @checked_sort_title 
+    #end
+
+
+    if params[:ratings] != nil
+      session[:ratings] = params[:ratings].keys
+    end
+    
     @checked_ratings = session[:ratings]
 
+    # wtf
     @movies = Movie.find_all_by_rating(@checked_ratings, :order => session[:sort])
-    
+      #redirect_to movies_path(:ratings => @checked_ratings, :sort => @checked_sort)
+       
+
     # block - debugging string
     n = "________".to_s
     @deb = n + "params : " + params.to_s + n + "params[:ratings] = " + params[:ratings].to_s + n + "session : " + session.to_s  + n + "session [:ratings] = " + session[:ratings].to_s + n + "flash : " + flash.to_s + n + "checked_ratings" + @checked_ratings.to_s

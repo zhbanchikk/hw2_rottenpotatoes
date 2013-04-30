@@ -1,0 +1,135 @@
+ params[:ratings].keys = ["G", "PG"]
+
+    Movie.find(
+
+
+    @checked["#{params[:ratings].keys}"] = true
+
+    
+    @checked = Hash.new
+    checked = {params[:ratings]}
+    checked.keys 
+        @movies = Movie.find(:order => params[:sort])
+
+, :ratings.keys => [] )
+
+    {"sort"=>"release_date"}
+
+
+    "ratings"=>{"G"=>"1", "PG"=>"1", "PG-13"=>"1"}
+    ratings.keys = []
+
+
+    
+    :ratings=>{"G"=>"1", "R"=>"1"}
+
+    hash "ratings"=>{"G"=>"1", "R"=>"1"}
+
+    params  - :ratings=>{"G"=>"1", "R"=>"1"}
+
+    h = { "a" => 100, "b" => 200, "c" => 300, "d" => 400 }
+h.keys   #=> ["a", "b", "c", "d"]
+
+
+--
+    
+    #default rating ON all?
+
+    @all_ratings = Movie.appr_value
+        
+  
+    # block - sorting by 'title' or 'release_date'
+    @movies = Movie.find(:all, :order => params[:sort])
+
+    #1 attempt imho bad
+    #if params[:sort] == "title"
+    #  @movies = Movie.all(:order => "title")
+    #    elsif params[:sort] == "release_date"
+    #  @movies = Movie.all(:order => "release_date")
+    #end
+    
+    # block - checked ratings checkbox ?
+
+----
+
+ #default rating ON all?
+    @all_ratings = Movie.appr_value
+    @movies = Movie.all
+
+
+    if params[:commit] == "Refresh" && params[:ratings] == nil
+      session[:ratings] = @all_ratings
+    end  
+
+    # block - checked ratings   
+    @checked = Hash.new
+    #session[:ratings] = params[:ratings] != nil ? params[:ratings].keys
+    #the same (above - terenary operator)
+    if params[:ratings] != nil
+      session[:ratings] = params[:ratings].keys
+    end
+
+    if session[:ratings] != nil
+      session[:ratings].each do |key|
+        @checked[key] = true
+      end
+    end
+    
+
+    # block - sorting by 'title' or 'release_date'
+    @movies = Movie.find(:all, :order => params[:sort])
+    #1 attempt imho bad
+    #if params[:sort] == "title"
+    #  @movies = Movie.all(:order => "title")
+    #    elsif params[:sort] == "release_date"
+    #  @movies = Movie.all(:order => "release_date")
+    #end    if params[:ratings] == nil
+
+    #block - results rerivation
+    if params[:ratings] =! nil
+      @movies = Movie.find_all_by_rating(session[:ratings], :order => params[:sort])
+    end
+
+
+
+    # block - debugging string
+    @deb = " /// " + @movie.to_s + " /// " + @movie.inspect.to_s + " /// " + params.to_s
+    # + " !!! ratings = " + params[:ratings].keys.to_s
+----
+
+
+
+    if params[:ratings]
+      session[:ratings] = params[:ratings]
+    end
+
+    if params[:sort]
+      session[:sort] = params[:sort] 
+    end
+
+
+    if (params[:ratings] && session[:ratings]) || (params[:sort] && session[:sort])
+      redirect_to movies_path(:ratings => session[:ratings], :sort => session[:sort])
+    end
+    
+    query_base = Movie
+
+    if session[:ratings]
+      query_base = query_base.scoped(:conditions => { :rating => session[:ratings].keys })
+    end
+
+    if session[:sort]
+      query_base = query_base.scoped(:order => session[:sort])
+    end
+
+    @movies = query_base.all
+
+    @all_ratings = Movie.appr_value
+
+    if session[:ratings]
+      @selected_ratings = session[:ratings]
+    else
+      @selected_ratings = {}
+    end
+    
+
